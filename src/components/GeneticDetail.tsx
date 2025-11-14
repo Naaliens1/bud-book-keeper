@@ -79,20 +79,29 @@ export const GeneticDetail = ({ genetic, onBack }: GeneticDetailProps) => {
                 <InfoItem label="Tiempo de Floración" value={genetic.flowering} />
                 <InfoItem label="Rendimiento" value={genetic.yield} />
                 <InfoItem label="Altura" value={genetic.height} />
+                {genetic.heightInterior && <InfoItem label="Altura Interior" value={genetic.heightInterior} />}
+                {genetic.heightExterior && <InfoItem label="Altura Exterior" value={genetic.heightExterior} />}
                 <InfoItem label="Producción Interior" value={genetic.indoorProduction} />
                 <InfoItem label="Producción Exterior" value={genetic.outdoorProduction} />
-                <InfoItem label="Sabor/Aroma" value={genetic.flavor} />
+                {genetic.harvestTime && <InfoItem label="Época de Cosecha" value={genetic.harvestTime} />}
+                <InfoItem label="Sabor" value={genetic.flavor} />
+                <InfoItem label="Aroma" value={genetic.aroma} />
               </div>
             </Card>
 
             <Card className="p-6 bg-gradient-card border-border/50">
+              <h3 className="text-lg font-semibold text-foreground mb-3">Historia</h3>
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{genetic.history}</p>
+            </Card>
+
+            <Card className="p-6 bg-gradient-card border-border/50">
               <h3 className="text-lg font-semibold text-foreground mb-3">Linaje y Genética</h3>
-              <p className="text-sm text-foreground/80 leading-relaxed">{genetic.parentage}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{genetic.parentage}</p>
             </Card>
 
             <Card className="p-6 bg-gradient-card border-border/50">
               <h3 className="text-lg font-semibold text-foreground mb-3">Objetivos del Breeding</h3>
-              <p className="text-sm text-foreground/80 leading-relaxed">{genetic.breedingGoals}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{genetic.breedingGoals}</p>
             </Card>
           </TabsContent>
 
