@@ -7,12 +7,17 @@ export interface Genetic {
   flowering: string;
   yield: string;
   flavor: string;
+  aroma: string;
   cbd: string;
   height: string;
+  heightInterior?: string;
+  heightExterior?: string;
   indoorProduction: string;
   outdoorProduction: string;
+  harvestTime?: string;
   parentage: string;
   breedingGoals: string;
+  history: string;
   image: string;
   inCultivation?: boolean;
 }
