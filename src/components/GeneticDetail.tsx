@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Genetic } from '@/types/genetics';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Sprout, FlaskConical } from 'lucide-react';
+import { ArrowLeft, Sprout, FlaskConical, Download } from 'lucide-react';
 import { LogEntryForm } from './LogEntryForm';
 import { LogTimeline } from './LogTimeline';
 import { useGenetics } from '@/contexts/GeneticsContext';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { exportToPDF } from '@/utils/pdfExport';
 
 interface GeneticDetailProps {
   genetic: Genetic;
@@ -20,22 +21,37 @@ export const GeneticDetail = ({ genetic, onBack }: GeneticDetailProps) => {
   const activeSession = getSessionByGenetic(genetic.id);
   const [activeTab, setActiveTab] = useState('info');
 
+  const handleExportPDF = () => {
+    exportToPDF(genetic, logs, activeSession);
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="sticky top-0 z-10 bg-card border-b border-border shadow-sm">
-        <div className="flex items-center gap-3 p-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onBack}
-            className="hover:bg-primary/20"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div>
-            <h1 className="text-xl font-bold text-foreground">{genetic.name}</h1>
-            <p className="text-sm text-muted-foreground">Detalles y Seguimiento</p>
+        <div className="flex items-center justify-between gap-3 p-4">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onBack}
+              className="hover:bg-primary/20"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div>
+              <h1 className="text-xl font-bold text-foreground">{genetic.name}</h1>
+              <p className="text-sm text-muted-foreground">Detalles y Seguimiento</p>
+            </div>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportPDF}
+            className="border-cannabis-green/30 hover:border-cannabis-green hover:bg-cannabis-green/10 transition-all"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            PDF
+          </Button>
         </div>
       </div>
 

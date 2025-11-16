@@ -1,22 +1,25 @@
 import { useState } from 'react';
-import { SplashScreen } from '@/components/SplashScreen';
 import { GeneticsGallery } from '@/components/GeneticsGallery';
 import { BottomNav } from '@/components/BottomNav';
 import { GeneticsProvider } from '@/contexts/GeneticsContext';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
-  const [showSplash, setShowSplash] = useState(true);
   const [activeTab, setActiveTab] = useState<'home' | 'add' | 'export'>('home');
+  const { toast } = useToast();
 
-  if (showSplash) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
-  }
+  const handleExport = () => {
+    toast({
+      title: "Exportar bitácora",
+      description: "Selecciona una genética y abre sus detalles para exportar su bitácora en PDF",
+    });
+  };
 
   return (
     <GeneticsProvider>
       <div className="min-h-screen bg-background">
         <GeneticsGallery />
-        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} onExport={handleExport} />
       </div>
     </GeneticsProvider>
   );
