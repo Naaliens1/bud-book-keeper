@@ -8,48 +8,58 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 150 8% 8%;
-    --foreground: 120 15% 95%;
+    --background: 150 8% 6%;
+    --foreground: 120 15% 96%;
 
-    --card: 150 10% 12%;
-    --card-foreground: 120 15% 95%;
+    --card: 150 12% 10%;
+    --card-foreground: 120 15% 96%;
 
-    --popover: 150 12% 10%;
-    --popover-foreground: 120 15% 95%;
+    --popover: 150 14% 12%;
+    --popover-foreground: 120 15% 96%;
 
-    --primary: 142 76% 36%;
-    --primary-foreground: 120 15% 95%;
+    --primary: 142 70% 45%;
+    --primary-foreground: 120 15% 96%;
 
-    --secondary: 280 60% 50%;
-    --secondary-foreground: 120 15% 95%;
+    --secondary: 280 55% 55%;
+    --secondary-foreground: 120 15% 96%;
 
-    --muted: 150 8% 20%;
-    --muted-foreground: 120 10% 65%;
+    --muted: 150 10% 22%;
+    --muted-foreground: 120 12% 68%;
 
-    --accent: 280 60% 50%;
-    --accent-foreground: 120 15% 95%;
+    --accent: 280 65% 58%;
+    --accent-foreground: 120 15% 96%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 120 15% 95%;
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 120 15% 96%;
 
-    --border: 150 10% 18%;
-    --input: 150 10% 18%;
-    --ring: 142 76% 36%;
+    --border: 150 12% 20%;
+    --input: 150 12% 18%;
+    --ring: 142 70% 45%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
-    --cannabis-green: 142 76% 36%;
-    --cannabis-green-light: 142 60% 50%;
-    --cannabis-purple: 280 60% 50%;
-    --cannabis-purple-dark: 280 40% 30%;
+    --cannabis-green: 142 70% 45%;
+    --cannabis-green-light: 142 65% 55%;
+    --cannabis-green-dark: 142 60% 35%;
+    --cannabis-purple: 280 55% 55%;
+    --cannabis-purple-light: 280 60% 65%;
+    --cannabis-purple-dark: 280 45% 40%;
     --cannabis-dark: 150 15% 8%;
     --cannabis-darker: 150 20% 5%;
+    --cannabis-accent: 160 85% 50%;
 
     --gradient-primary: linear-gradient(135deg, hsl(var(--cannabis-green)) 0%, hsl(var(--cannabis-purple)) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(150 12% 10%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--cannabis-purple-dark)) 0%, hsl(var(--cannabis-green-dark)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(150 14% 12%) 100%);
+    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(var(--cannabis-green) / 0.15) 0%, transparent 50%);
     
-    --shadow-glow: 0 0 30px hsl(var(--cannabis-green) / 0.3);
-    --shadow-card: 0 10px 40px -10px hsl(0 0% 0% / 0.6);
+    --shadow-glow: 0 0 40px hsl(var(--cannabis-green) / 0.25), 0 0 80px hsl(var(--cannabis-purple) / 0.15);
+    --shadow-card: 0 10px 50px -12px hsl(0 0% 0% / 0.7), 0 4px 6px -2px hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 20px 60px -15px hsl(0 0% 0% / 0.8), 0 8px 12px -4px hsl(0 0% 0% / 0.4);
+    --shadow-soft: 0 2px 8px hsl(0 0% 0% / 0.2);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 }
 
