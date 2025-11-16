@@ -14,7 +14,116 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cultivation_sessions: {
+        Row: {
+          created_at: string | null
+          end_date: string | null
+          genetic_id: string
+          id: string
+          notes: string | null
+          start_date: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          end_date?: string | null
+          genetic_id: string
+          id?: string
+          notes?: string | null
+          start_date?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          end_date?: string | null
+          genetic_id?: string
+          id?: string
+          notes?: string | null
+          start_date?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      log_entries: {
+        Row: {
+          created_at: string | null
+          date: string
+          ec: number | null
+          height: number | null
+          id: string
+          observations: string | null
+          ph: number | null
+          session_id: string
+          stage: string
+          temperature: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string
+          ec?: number | null
+          height?: number | null
+          id?: string
+          observations?: string | null
+          ph?: number | null
+          session_id: string
+          stage: string
+          temperature?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          ec?: number | null
+          height?: number | null
+          id?: string
+          observations?: string | null
+          ph?: number | null
+          session_id?: string
+          stage?: string
+          temperature?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "log_entries_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "cultivation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
