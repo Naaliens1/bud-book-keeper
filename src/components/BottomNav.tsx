@@ -1,23 +1,20 @@
-import { Home, Plus, Download } from 'lucide-react';
+import { Home, Plus, Download, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface BottomNavProps {
   activeTab: 'home' | 'add' | 'export';
   onTabChange: (tab: 'home' | 'add' | 'export') => void;
+  onExport?: () => void;
 }
 
-export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
-  const handleExport = () => {
-    toast.info('Función de exportación en desarrollo', {
-      description: 'Próximamente podrás exportar tu bitácora como PDF o CSV'
-    });
-  };
+export const BottomNav = ({ activeTab, onTabChange, onExport }: BottomNavProps) => {
+  const { signOut } = useAuth();
 
-  const handleAdd = () => {
-    toast.info('Función para agregar genéticas en desarrollo', {
-      description: 'Próximamente podrás agregar tus propias genéticas personalizadas'
-    });
+  const handleExport = () => {
+    if (onExport) {
+      onExport();
+    }
   };
 
   return (
@@ -26,8 +23,8 @@ export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
         <Button
           variant="ghost"
           size="lg"
-          className={`flex flex-col items-center gap-1 h-full flex-1 rounded-none ${
-            activeTab === 'home' ? 'text-primary bg-primary/10' : 'text-muted-foreground'
+          className={`flex flex-col items-center gap-1 h-full flex-1 rounded-none transition-all ${
+            activeTab === 'home' ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'
           }`}
           onClick={() => onTabChange('home')}
         >
@@ -37,22 +34,8 @@ export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
         <Button
           variant="ghost"
           size="lg"
-          className={`flex flex-col items-center gap-1 h-full flex-1 rounded-none ${
-            activeTab === 'add' ? 'text-primary bg-primary/10' : 'text-muted-foreground'
-          }`}
-          onClick={() => {
-            onTabChange('add');
-            handleAdd();
-          }}
-        >
-          <Plus className="w-6 h-6" />
-          <span className="text-xs">Agregar</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="lg"
-          className={`flex flex-col items-center gap-1 h-full flex-1 rounded-none ${
-            activeTab === 'export' ? 'text-primary bg-primary/10' : 'text-muted-foreground'
+          className={`flex flex-col items-center gap-1 h-full flex-1 rounded-none transition-all ${
+            activeTab === 'export' ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'
           }`}
           onClick={() => {
             onTabChange('export');
@@ -61,6 +44,15 @@ export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
         >
           <Download className="w-6 h-6" />
           <span className="text-xs">Exportar</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="lg"
+          className="flex flex-col items-center gap-1 h-full flex-1 rounded-none text-muted-foreground hover:text-destructive transition-all"
+          onClick={signOut}
+        >
+          <LogOut className="w-6 h-6" />
+          <span className="text-xs">Salir</span>
         </Button>
       </div>
     </div>
