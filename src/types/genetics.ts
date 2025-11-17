@@ -40,4 +40,5 @@ export interface CultivationSession {
   endDate?: string;
   finalYield?: number;
   notes: string;
+  cultivationName?: string;
 }

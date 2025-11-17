@@ -122,7 +122,7 @@ export const GeneticDetail = ({ genetic, onBack }: GeneticDetailProps) => {
           </TabsContent>
 
           <TabsContent value="log" className="mt-4 space-y-4">
-            <LogEntryForm geneticId={genetic.id} />
+            <LogEntryForm geneticId={genetic.id} genetic={genetic} />
             <LogTimeline geneticId={genetic.id} />
           </TabsContent>
         </Tabs>

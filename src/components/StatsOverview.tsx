@@ -1,9 +1,11 @@
 import { useGenetics } from '@/contexts/GeneticsContext';
 import { Card } from '@/components/ui/card';
 import { Sprout, Calendar, TrendingUp, Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const StatsOverview = () => {
   const { genetics, sessions, logEntries } = useGenetics();
+  const navigate = useNavigate();
 
   const activeCultivations = sessions.filter(s => !s.endDate).length;
   const totalCultivations = sessions.length;
@@ -17,6 +19,7 @@ export const StatsOverview = () => {
       value: activeCultivations,
       color: 'cannabis-green',
       bgColor: 'cannabis-green/10',
+      route: '/active-cultivations',
     },
     {
       icon: Calendar,
@@ -24,6 +27,7 @@ export const StatsOverview = () => {
       value: totalCultivations,
       color: 'cannabis-purple',
       bgColor: 'cannabis-purple/10',
+      route: '/all-cultivations',
     },
     {
       icon: TrendingUp,
@@ -31,6 +35,7 @@ export const StatsOverview = () => {
       value: totalLogs,
       color: 'cannabis-accent',
       bgColor: 'cannabis-accent/10',
+      route: '/all-log-entries',
     },
     {
       icon: Award,
@@ -38,6 +43,7 @@ export const StatsOverview = () => {
       value: completedCultivations,
       color: 'cannabis-green-light',
       bgColor: 'cannabis-green-light/10',
+      route: '/completed-cultivations',
     },
   ];
 
@@ -48,8 +54,9 @@ export const StatsOverview = () => {
         return (
           <Card
             key={stat.label}
-            className="p-5 bg-gradient-card border-border/50 hover:border-border transition-all duration-300 hover:shadow-soft animate-scale-in"
+            className="p-5 bg-gradient-card border-border/50 hover:border-border transition-all duration-300 hover:shadow-soft animate-scale-in cursor-pointer"
             style={{ animationDelay: `${index * 100}ms` }}
+            onClick={() => navigate(stat.route)}
           >
             <div className="flex items-center gap-3">
               <div className={`p-3 rounded-xl bg-${stat.bgColor} border border-${stat.color}/20`}>

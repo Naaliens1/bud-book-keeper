@@ -17,6 +17,7 @@ export type Database = {
       cultivation_sessions: {
         Row: {
           created_at: string | null
+          cultivation_name: string | null
           end_date: string | null
           genetic_id: string
           id: string
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          cultivation_name?: string | null
           end_date?: string | null
           genetic_id: string
           id?: string
@@ -37,12 +39,61 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          cultivation_name?: string | null
           end_date?: string | null
           genetic_id?: string
           id?: string
           notes?: string | null
           start_date?: string
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      friend_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          receiver_id: string
+          sender_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          receiver_id: string
+          sender_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          receiver_id?: string
+          sender_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      friendships: {
+        Row: {
+          created_at: string | null
+          friend_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          friend_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          friend_id?: string
+          id?: string
           user_id?: string
         }
         Relationships: []
@@ -121,6 +172,77 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      shared_cultivations: {
+        Row: {
+          created_at: string | null
+          cultivation_session_id: string
+          id: string
+          owner_id: string
+          shared_with_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          cultivation_session_id: string
+          id?: string
+          owner_id: string
+          shared_with_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          cultivation_session_id?: string
+          id?: string
+          owner_id?: string
+          shared_with_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_cultivations_cultivation_session_id_fkey"
+            columns: ["cultivation_session_id"]
+            isOneToOne: false
+            referencedRelation: "cultivation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_settings: {
+        Row: {
+          accent_color: string | null
+          background_color: string | null
+          created_at: string | null
+          id: string
+          primary_color: string | null
+          theme_mode: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          accent_color?: string | null
+          background_color?: string | null
+          created_at?: string | null
+          id?: string
+          primary_color?: string | null
+          theme_mode?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          accent_color?: string | null
+          background_color?: string | null
+          created_at?: string | null
+          id?: string
+          primary_color?: string | null
+          theme_mode?: string | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
