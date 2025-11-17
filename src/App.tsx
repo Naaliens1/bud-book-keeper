@@ -7,6 +7,14 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import { ActiveCultivations } from "./pages/ActiveCultivations";
+import { AllCultivations } from "./pages/AllCultivations";
+import { AllLogEntries } from "./pages/AllLogEntries";
+import { CompletedCultivations } from "./pages/CompletedCultivations";
+import { Settings } from "./pages/Settings";
+import { Profile } from "./pages/Profile";
+import { Friends } from "./pages/Friends";
+import { Themes } from "./pages/Themes";
 
 const queryClient = new QueryClient();
 
@@ -35,23 +43,30 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/auth" element={<Auth />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              }
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppRoutes />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
+
+const AppRoutes = () => {
+  const { user } = useAuth();
+  return (
+    <Routes>
+      <Route path="/auth" element={user ? <Navigate to="/" /> : <Auth />} />
+      <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+      <Route path="/active-cultivations" element={<ProtectedRoute><ActiveCultivations /></ProtectedRoute>} />
+      <Route path="/all-cultivations" element={<ProtectedRoute><AllCultivations /></ProtectedRoute>} />
+      <Route path="/all-log-entries" element={<ProtectedRoute><AllLogEntries /></ProtectedRoute>} />
+      <Route path="/completed-cultivations" element={<ProtectedRoute><CompletedCultivations /></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+      <Route path="/settings/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path="/settings/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
+      <Route path="/settings/themes" element={<ProtectedRoute><Themes /></ProtectedRoute>} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 export default App;

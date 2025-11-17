@@ -11,7 +11,7 @@ interface GeneticsContextType {
   sessions: CultivationSession[];
   loading: boolean;
   addLogEntry: (entry: Omit<LogEntry, 'id'>) => Promise<void>;
-  startCultivation: (geneticId: string, notes: string) => Promise<void>;
+  startCultivation: (geneticId: string, notes: string, cultivationName: string) => Promise<void>;
   endCultivation: (geneticId: string, finalYield: number) => Promise<void>;
   getLogsByGenetic: (geneticId: string) => LogEntry[];
   getSessionByGenetic: (geneticId: string) => CultivationSession | undefined;
@@ -61,6 +61,7 @@ export const GeneticsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         endDate: session.end_date || undefined,
         notes: session.notes || '',
         finalYield: undefined,
+        cultivationName: session.cultivation_name || undefined,
       }));
 
       const mappedLogs: LogEntry[] = (logsData || []).map(log => ({
@@ -199,7 +200,7 @@ export const GeneticsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const startCultivation = async (geneticId: string, notes: string) => {
+  const startCultivation = async (geneticId: string, notes: string, cultivationName: string) => {
     if (!user) {
       toast({
         variant: "destructive",
@@ -215,6 +216,7 @@ export const GeneticsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         genetic_id: geneticId,
         start_date: new Date().toISOString(),
         notes,
+        cultivation_name: cultivationName,
       });
 
       if (error) throw error;

@@ -1,6 +1,6 @@
-import { Home, Plus, Download, LogOut } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Home, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface BottomNavProps {
   activeTab: 'home' | 'add' | 'export';
@@ -8,52 +8,41 @@ interface BottomNavProps {
   onExport?: () => void;
 }
 
-export const BottomNav = ({ activeTab, onTabChange, onExport }: BottomNavProps) => {
+export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
   const { signOut } = useAuth();
+  const navigate = useNavigate();
 
-  const handleExport = () => {
-    if (onExport) {
-      onExport();
-    }
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/auth');
   };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-glow z-20">
-      <div className="flex justify-around items-center h-16 max-w-2xl mx-auto">
-        <Button
-          variant="ghost"
-          size="lg"
-          className={`flex flex-col items-center gap-1 h-full flex-1 rounded-none transition-all ${
-            activeTab === 'home' ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'
+      <div className="flex items-center h-16 max-w-2xl mx-auto">
+        <button
+          onClick={() => navigate('/')}
+          className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 transition-colors ${
+            activeTab === 'home' ? 'text-primary' : 'text-muted-foreground hover:text-primary'
           }`}
-          onClick={() => onTabChange('home')}
         >
-          <Home className="w-6 h-6" />
-          <span className="text-xs">Inicio</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="lg"
-          className={`flex flex-col items-center gap-1 h-full flex-1 rounded-none transition-all ${
-            activeTab === 'export' ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'
-          }`}
-          onClick={() => {
-            onTabChange('export');
-            handleExport();
-          }}
+          <Home className="w-5 h-5" />
+          <span className="text-xs font-medium">Inicio</span>
+        </button>
+        <button
+          onClick={() => navigate('/settings')}
+          className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-muted-foreground hover:text-primary transition-colors"
         >
-          <Download className="w-6 h-6" />
-          <span className="text-xs">Exportar</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="lg"
-          className="flex flex-col items-center gap-1 h-full flex-1 rounded-none text-muted-foreground hover:text-destructive transition-all"
-          onClick={signOut}
+          <Settings className="w-5 h-5" />
+          <span className="text-xs font-medium">Ajustes</span>
+        </button>
+        <button
+          onClick={handleLogout}
+          className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-muted-foreground hover:text-destructive transition-colors"
         >
-          <LogOut className="w-6 h-6" />
-          <span className="text-xs">Salir</span>
-        </Button>
+          <LogOut className="w-5 h-5" />
+          <span className="text-xs font-medium">Salir</span>
+        </button>
       </div>
     </div>
   );

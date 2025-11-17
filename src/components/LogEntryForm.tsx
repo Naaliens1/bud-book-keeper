@@ -8,13 +8,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Plus, Play, Square } from 'lucide-react';
 import { toast } from 'sonner';
+import { Genetic } from '@/types/genetics';
+import { CultivationNameModal } from './CultivationNameModal';
 
 interface LogEntryFormProps {
   geneticId: string;
+  genetic: Genetic;
 }
 
-export const LogEntryForm = ({ geneticId }: LogEntryFormProps) => {
+export const LogEntryForm = ({ geneticId, genetic }: LogEntryFormProps) => {
   const { addLogEntry, startCultivation, endCultivation, getSessionByGenetic } = useGenetics();
+  const [showNameModal, setShowNameModal] = useState(false);
   const activeSession = getSessionByGenetic(geneticId);
 
   const [stage, setStage] = useState<'germination' | 'vegetative' | 'flowering' | 'harvest'>('vegetative');
@@ -51,10 +55,11 @@ export const LogEntryForm = ({ geneticId }: LogEntryFormProps) => {
     setTemperature('');
   };
 
-  const handleStartCultivation = () => {
-    startCultivation(geneticId, startNotes);
+  const handleStartCultivation = (cultivationName: string) => {
+    startCultivation(geneticId, startNotes, cultivationName);
     toast.success('Cultivo iniciado exitosamente');
     setStartNotes('');
+    setShowNameModal(false);
   };
 
   const handleEndCultivation = () => {
@@ -68,30 +73,25 @@ export const LogEntryForm = ({ geneticId }: LogEntryFormProps) => {
   };
 
   return (
-    <div className="space-y-4">
-      {!activeSession ? (
-        <Card className="p-6 bg-gradient-card border-border/50">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Play className="w-5 h-5 text-primary" />
-            Iniciar Cultivo
-          </h3>
-          <div className="space-y-3">
-            <div>
-              <Label htmlFor="startNotes">Notas Iniciales</Label>
-              <Textarea
-                id="startNotes"
-                value={startNotes}
-                onChange={(e) => setStartNotes(e.target.value)}
-                placeholder="Escribe tus observaciones iniciales..."
-                className="bg-background border-border"
-              />
-            </div>
-            <Button onClick={handleStartCultivation} className="w-full bg-primary hover:bg-primary/90">
+    <>
+      <CultivationNameModal
+        open={showNameModal}
+        onClose={() => setShowNameModal(false)}
+        onConfirm={handleStartCultivation}
+        geneticName={genetic.name}
+      />
+      <div className="space-y-4">
+        {!activeSession ? (
+          <Card className="p-6 bg-gradient-card border-border/50">
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Play className="w-5 h-5 text-primary" />
+              Iniciar Cultivo
+            </h3>
+            <Button onClick={() => setShowNameModal(true)} className="w-full bg-primary hover:bg-primary/90">
               <Play className="w-4 h-4 mr-2" />
               Iniciar Cultivo
             </Button>
-          </div>
-        </Card>
+          </Card>
       ) : (
         <Card className="p-6 bg-gradient-card border-border/50">
           <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
