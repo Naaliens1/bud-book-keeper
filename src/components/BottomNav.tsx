@@ -1,6 +1,5 @@
-import { Home, Settings, LogOut } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { Home, BookOpen, Settings } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface BottomNavProps {
   activeTab: 'home' | 'add' | 'export';
@@ -9,41 +8,44 @@ interface BottomNavProps {
 }
 
 export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
-  const { signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogout = async () => {
-    await signOut();
-    navigate('/auth');
-  };
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-glow z-20">
-      <div className="flex items-center h-16 max-w-2xl mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg z-50">
+      <div className="flex justify-around items-center h-16 px-4">
         <button
           onClick={() => navigate('/')}
-          className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 transition-colors ${
-            activeTab === 'home' ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+          className={`flex flex-col items-center justify-center flex-1 h-full transition-all ${
+            isActive('/') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
-          <Home className="w-5 h-5" />
+          <Home className="w-6 h-6 mb-1" />
           <span className="text-xs font-medium">Inicio</span>
         </button>
+
+        <button
+          onClick={() => navigate('/all-log-entries')}
+          className={`flex flex-col items-center justify-center flex-1 h-full transition-all ${
+            isActive('/all-log-entries') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <BookOpen className="w-6 h-6 mb-1" />
+          <span className="text-xs font-medium">Bitácora</span>
+        </button>
+
         <button
           onClick={() => navigate('/settings')}
-          className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-muted-foreground hover:text-primary transition-colors"
+          className={`flex flex-col items-center justify-center flex-1 h-full transition-all ${
+            isActive('/settings') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+          }`}
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-6 h-6 mb-1" />
           <span className="text-xs font-medium">Ajustes</span>
         </button>
-        <button
-          onClick={handleLogout}
-          className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-muted-foreground hover:text-destructive transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-          <span className="text-xs font-medium">Salir</span>
-        </button>
       </div>
-    </div>
+    </nav>
   );
 };
