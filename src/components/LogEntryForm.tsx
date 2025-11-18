@@ -92,8 +92,8 @@ export const LogEntryForm = ({ geneticId, genetic }: LogEntryFormProps) => {
               Iniciar Cultivo
             </Button>
           </Card>
-      ) : (
-        <Card className="p-6 bg-gradient-card border-border/50">
+        ) : (
+          <Card className="p-6 bg-gradient-card border-border/50">
           <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <Square className="w-5 h-5 text-destructive" />
             Finalizar Cultivo
@@ -206,5 +206,6 @@ export const LogEntryForm = ({ geneticId, genetic }: LogEntryFormProps) => {
         </div>
       </Card>
     </div>
+    </>
   );
 };
