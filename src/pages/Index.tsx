@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { GeneticsGallery } from '@/components/GeneticsGallery';
 import { BottomNav } from '@/components/BottomNav';
-import { GeneticsProvider } from '@/contexts/GeneticsContext';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
@@ -16,12 +15,10 @@ const Index = () => {
   };
 
   return (
-    <GeneticsProvider>
-      <div className="min-h-screen bg-background">
-        <GeneticsGallery />
-        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} onExport={handleExport} />
-      </div>
-    </GeneticsProvider>
+    <div className="min-h-screen bg-background">
+      <GeneticsGallery />
+      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} onExport={handleExport} />
+    </div>
   );
 };
 

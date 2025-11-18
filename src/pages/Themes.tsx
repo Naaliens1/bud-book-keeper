@@ -1,13 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { ArrowLeft, Palette, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 
 export const Themes = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState('dark');
+  const [customPrimary, setCustomPrimary] = useState('');
+
+  useEffect(() => { if (user) loadTheme(); }, [user]);
+
+  const loadTheme = async () => {
+    if (!user) return;
+    const { data } = await supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle();
+    if (data) setSelectedTheme(data.theme_mode || 'dark');
+  };
+
+  const applyTheme = async (theme: string) => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      await supabase.from('user_settings').upsert({ user_id: user.id, theme_mode: theme });
+      setSelectedTheme(theme);
+      toast.success('Tema aplicado');
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const themes = [
     {
