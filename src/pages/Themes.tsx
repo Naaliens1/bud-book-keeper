@@ -14,23 +14,40 @@ export const Themes = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState('dark');
-  const [customPrimary, setCustomPrimary] = useState('');
+  const [customPrimary, setCustomPrimary] = useState('#22c55e');
+  const [customBackground, setCustomBackground] = useState('#0a0a0a');
+  const [customAccent, setCustomAccent] = useState('#8b5cf6');
 
   useEffect(() => { if (user) loadTheme(); }, [user]);
 
   const loadTheme = async () => {
     if (!user) return;
     const { data } = await supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle();
-    if (data) setSelectedTheme(data.theme_mode || 'dark');
+    if (data) {
+      setSelectedTheme(data.theme_mode || 'dark');
+      if (data.primary_color) setCustomPrimary(data.primary_color);
+      if (data.background_color) setCustomBackground(data.background_color);
+      if (data.accent_color) setCustomAccent(data.accent_color);
+    }
   };
 
-  const applyTheme = async (theme: string) => {
+  const applyTheme = async () => {
     if (!user) return;
     setLoading(true);
     try {
-      await supabase.from('user_settings').upsert({ user_id: user.id, theme_mode: theme });
-      setSelectedTheme(theme);
-      toast.success('Tema aplicado');
+      const settings: any = { 
+        user_id: user.id, 
+        theme_mode: selectedTheme 
+      };
+      
+      if (selectedTheme === 'custom') {
+        settings.primary_color = customPrimary;
+        settings.background_color = customBackground;
+        settings.accent_color = customAccent;
+      }
+      
+      await supabase.from('user_settings').upsert(settings);
+      toast.success('Tema guardado correctamente');
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -152,12 +169,15 @@ export const Themes = () => {
                 <div className="flex gap-2">
                   <input
                     type="color"
+                    value={customPrimary}
+                    onChange={(e) => setCustomPrimary(e.target.value)}
                     className="h-10 w-20 rounded border border-border cursor-pointer"
-                    defaultValue="#22c55e"
                   />
-                  <Button variant="outline" className="flex-1">
-                    Seleccionar Color
-                  </Button>
+                  <Input 
+                    value={customPrimary} 
+                    onChange={(e) => setCustomPrimary(e.target.value)}
+                    className="flex-1"
+                  />
                 </div>
               </div>
               <div className="space-y-2">
@@ -165,12 +185,15 @@ export const Themes = () => {
                 <div className="flex gap-2">
                   <input
                     type="color"
+                    value={customBackground}
+                    onChange={(e) => setCustomBackground(e.target.value)}
                     className="h-10 w-20 rounded border border-border cursor-pointer"
-                    defaultValue="#0a0a0a"
                   />
-                  <Button variant="outline" className="flex-1">
-                    Seleccionar Color
-                  </Button>
+                  <Input 
+                    value={customBackground} 
+                    onChange={(e) => setCustomBackground(e.target.value)}
+                    className="flex-1"
+                  />
                 </div>
               </div>
               <div className="space-y-2">
@@ -178,19 +201,27 @@ export const Themes = () => {
                 <div className="flex gap-2">
                   <input
                     type="color"
+                    value={customAccent}
+                    onChange={(e) => setCustomAccent(e.target.value)}
                     className="h-10 w-20 rounded border border-border cursor-pointer"
-                    defaultValue="#8b5cf6"
                   />
-                  <Button variant="outline" className="flex-1">
-                    Seleccionar Color
-                  </Button>
+                  <Input 
+                    value={customAccent} 
+                    onChange={(e) => setCustomAccent(e.target.value)}
+                    className="flex-1"
+                  />
                 </div>
               </div>
             </div>
           </Card>
         )}
 
-        <Button className="w-full" size="lg">
+        <Button 
+          className="w-full" 
+          size="lg"
+          onClick={applyTheme}
+          disabled={loading}
+        >
           Guardar Cambios
         </Button>
       </div>

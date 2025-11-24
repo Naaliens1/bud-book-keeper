@@ -56,6 +56,7 @@ export const GeneticsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (logsError) throw logsError;
 
       const mappedSessions: CultivationSession[] = (sessionsData || []).map(session => ({
+        id: session.id,
         geneticId: session.genetic_id,
         startDate: session.start_date,
         endDate: session.end_date || undefined,
@@ -64,17 +65,20 @@ export const GeneticsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         cultivationName: session.cultivation_name || undefined,
       }));
 
-      const mappedLogs: LogEntry[] = (logsData || []).map(log => ({
-        id: log.id,
-        geneticId: log.session_id,
-        date: log.date,
-        stage: (log.stage as 'germination' | 'vegetative' | 'flowering' | 'harvest'),
-        observations: log.observations || '',
-        height: log.height ? Number(log.height) : undefined,
-        ph: log.ph ? Number(log.ph) : undefined,
-        ec: log.ec ? Number(log.ec) : undefined,
-        temperature: log.temperature ? Number(log.temperature) : undefined,
-      }));
+      const mappedLogs: LogEntry[] = (logsData || []).map(log => {
+        const session = mappedSessions.find(s => s.id === log.session_id);
+        return {
+          id: log.id,
+          geneticId: session?.geneticId || '',
+          date: log.date,
+          stage: (log.stage as 'germination' | 'vegetative' | 'flowering' | 'harvest'),
+          observations: log.observations || '',
+          height: log.height ? Number(log.height) : undefined,
+          ph: log.ph ? Number(log.ph) : undefined,
+          ec: log.ec ? Number(log.ec) : undefined,
+          temperature: log.temperature ? Number(log.temperature) : undefined,
+        };
+      });
 
       setSessions(mappedSessions);
       setLogEntries(mappedLogs);

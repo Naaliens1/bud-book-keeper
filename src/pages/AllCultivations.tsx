@@ -79,7 +79,7 @@ export const AllCultivations = () => {
 
             return (
               <Card
-                key={session.startDate}
+                key={session.id || session.startDate}
                 className="p-4 hover:shadow-md transition-all cursor-pointer"
                 onClick={() => navigate('/', { state: { selectedGeneticId: genetic.id } })}
               >
