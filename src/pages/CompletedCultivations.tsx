@@ -93,7 +93,7 @@ export const CompletedCultivations = () => {
               <Card
                 key={session.id || session.startDate}
                 className="p-4 hover:shadow-md transition-all cursor-pointer"
-                onClick={() => navigate('/', { state: { selectedGeneticId: genetic.id } })}
+                onClick={() => navigate(`/cultivation/${session.id}`)}
               >
                 <div className="flex items-start gap-3">
                   <img
