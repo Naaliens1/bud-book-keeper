@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { useState } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,44 +9,15 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 export const Themes = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const { themeMode, setThemeMode, customColors, setCustomColors, applyTheme } = useTheme();
   const [loading, setLoading] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState('dark');
-  const [customPrimary, setCustomPrimary] = useState('#22c55e');
-  const [customBackground, setCustomBackground] = useState('#0a0a0a');
-  const [customAccent, setCustomAccent] = useState('#8b5cf6');
 
-  useEffect(() => { if (user) loadTheme(); }, [user]);
-
-  const loadTheme = async () => {
-    if (!user) return;
-    const { data } = await supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle();
-    if (data) {
-      setSelectedTheme(data.theme_mode || 'dark');
-      if (data.primary_color) setCustomPrimary(data.primary_color);
-      if (data.background_color) setCustomBackground(data.background_color);
-      if (data.accent_color) setCustomAccent(data.accent_color);
-    }
-  };
-
-  const applyTheme = async () => {
-    if (!user) return;
+  const handleApplyTheme = async () => {
     setLoading(true);
     try {
-      const settings: any = { 
-        user_id: user.id, 
-        theme_mode: selectedTheme 
-      };
-      
-      if (selectedTheme === 'custom') {
-        settings.primary_color = customPrimary;
-        settings.background_color = customBackground;
-        settings.accent_color = customAccent;
-      }
-      
-      await supabase.from('user_settings').upsert(settings);
-      toast.success('Tema guardado correctamente');
+      await applyTheme();
+      toast.success('Tema aplicado correctamente');
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -124,11 +94,11 @@ export const Themes = () => {
               <Card
                 key={theme.id}
                 className={`p-4 cursor-pointer transition-all border-2 ${
-                  selectedTheme === theme.id
+                  themeMode === theme.id
                     ? 'border-primary shadow-md'
                     : 'border-transparent hover:border-border'
                 }`}
-                onClick={() => setSelectedTheme(theme.id)}
+                onClick={() => setThemeMode(theme.id as any)}
               >
                 <div className="flex items-center gap-4">
                   <div className="flex gap-2">
@@ -149,7 +119,7 @@ export const Themes = () => {
                     <h3 className="font-semibold text-foreground">{theme.name}</h3>
                     <p className="text-sm text-muted-foreground">{theme.description}</p>
                   </div>
-                  {selectedTheme === theme.id && (
+                  {themeMode === theme.id && (
                     <Check className="w-5 h-5 text-primary" />
                   )}
                 </div>
@@ -158,7 +128,7 @@ export const Themes = () => {
           </div>
         </Card>
 
-        {selectedTheme === 'custom' && (
+        {themeMode === 'custom' && (
           <Card className="p-6">
             <h2 className="text-lg font-semibold text-foreground mb-4">
               Personalizar Colores
@@ -169,13 +139,13 @@ export const Themes = () => {
                 <div className="flex gap-2">
                   <input
                     type="color"
-                    value={customPrimary}
-                    onChange={(e) => setCustomPrimary(e.target.value)}
+                    value={customColors.primary}
+                    onChange={(e) => setCustomColors({ ...customColors, primary: e.target.value })}
                     className="h-10 w-20 rounded border border-border cursor-pointer"
                   />
                   <Input 
-                    value={customPrimary} 
-                    onChange={(e) => setCustomPrimary(e.target.value)}
+                    value={customColors.primary} 
+                    onChange={(e) => setCustomColors({ ...customColors, primary: e.target.value })}
                     className="flex-1"
                   />
                 </div>
@@ -185,13 +155,13 @@ export const Themes = () => {
                 <div className="flex gap-2">
                   <input
                     type="color"
-                    value={customBackground}
-                    onChange={(e) => setCustomBackground(e.target.value)}
+                    value={customColors.background}
+                    onChange={(e) => setCustomColors({ ...customColors, background: e.target.value })}
                     className="h-10 w-20 rounded border border-border cursor-pointer"
                   />
                   <Input 
-                    value={customBackground} 
-                    onChange={(e) => setCustomBackground(e.target.value)}
+                    value={customColors.background} 
+                    onChange={(e) => setCustomColors({ ...customColors, background: e.target.value })}
                     className="flex-1"
                   />
                 </div>
@@ -201,13 +171,13 @@ export const Themes = () => {
                 <div className="flex gap-2">
                   <input
                     type="color"
-                    value={customAccent}
-                    onChange={(e) => setCustomAccent(e.target.value)}
+                    value={customColors.accent}
+                    onChange={(e) => setCustomColors({ ...customColors, accent: e.target.value })}
                     className="h-10 w-20 rounded border border-border cursor-pointer"
                   />
                   <Input 
-                    value={customAccent} 
-                    onChange={(e) => setCustomAccent(e.target.value)}
+                    value={customColors.accent} 
+                    onChange={(e) => setCustomColors({ ...customColors, accent: e.target.value })}
                     className="flex-1"
                   />
                 </div>
@@ -219,10 +189,10 @@ export const Themes = () => {
         <Button 
           className="w-full" 
           size="lg"
-          onClick={applyTheme}
+          onClick={handleApplyTheme}
           disabled={loading}
         >
-          Guardar Cambios
+          {loading ? 'Guardando...' : 'Guardar Cambios'}
         </Button>
       </div>
     </div>

@@ -4,17 +4,19 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Search, Calendar, Droplets, Zap, Thermometer, Ruler } from 'lucide-react';
+import { ArrowLeft, Search, Calendar, Droplets, Zap, Thermometer, Ruler, Edit } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { EditLogEntryDialog } from '@/components/EditLogEntryDialog';
 
 export const AllLogEntries = () => {
-  const { logEntries, genetics, sessions } = useGenetics();
+  const { logEntries, genetics, sessions, refreshData } = useGenetics();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStage, setFilterStage] = useState('all');
+  const [editingEntry, setEditingEntry] = useState<any>(null);
 
   const stageLabels: Record<string, string> = {
     germination: 'Germinación',
@@ -48,7 +50,14 @@ export const AllLogEntries = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <>
+      <EditLogEntryDialog
+        entry={editingEntry}
+        open={!!editingEntry}
+        onClose={() => setEditingEntry(null)}
+        onSuccess={refreshData}
+      />
+      <div className="min-h-screen bg-background pb-24">
       <div className="sticky top-0 z-10 bg-card border-b border-border shadow-sm">
         <div className="flex items-center gap-3 p-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
@@ -102,9 +111,19 @@ export const AllLogEntries = () => {
                       </h3>
                       <p className="text-xs text-muted-foreground">{genetic.bank}</p>
                     </div>
-                    <Badge variant="outline" className="shrink-0">
-                      {stageLabels[entry.stage]}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="shrink-0">
+                        {stageLabels[entry.stage]}
+                      </Badge>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingEntry(entry)}
+                        className="h-7 w-7 p-0"
+                      >
+                        <Edit className="w-3 h-3" />
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -161,5 +180,6 @@ export const AllLogEntries = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };

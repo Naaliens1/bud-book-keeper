@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { useGenetics } from '@/contexts/GeneticsContext';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sprout, Leaf, Flower, Package } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sprout, Leaf, Flower, Package, Edit } from 'lucide-react';
+import { EditLogEntryDialog } from './EditLogEntryDialog';
 
 interface LogTimelineProps {
   geneticId: string;
@@ -29,7 +32,8 @@ const stageColors = {
 };
 
 export const LogTimeline = ({ geneticId }: LogTimelineProps) => {
-  const { getLogsByGenetic } = useGenetics();
+  const { getLogsByGenetic, refreshData } = useGenetics();
+  const [editingEntry, setEditingEntry] = useState<any>(null);
   const logs = getLogsByGenetic(geneticId).sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -44,9 +48,16 @@ export const LogTimeline = ({ geneticId }: LogTimelineProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-foreground">Historial de Cultivo</h3>
-      {logs.map((log, index) => {
+    <>
+      <EditLogEntryDialog
+        entry={editingEntry}
+        open={!!editingEntry}
+        onClose={() => setEditingEntry(null)}
+        onSuccess={refreshData}
+      />
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-foreground">Historial de Cultivo</h3>
+        {logs.map((log, index) => {
         const Icon = stageIcons[log.stage];
         return (
           <Card key={log.id} className="p-4 bg-gradient-card border-border/50 relative">
@@ -60,17 +71,27 @@ export const LogTimeline = ({ geneticId }: LogTimelineProps) => {
                 </div>
               </div>
               <div className="flex-1 space-y-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={stageColors[log.stage]}>
-                    {stageLabels[log.stage]}
-                  </Badge>
-                  <span className="text-sm text-muted-foreground">
-                    {new Date(log.date).toLocaleDateString('es-ES', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </span>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <Badge className={stageColors[log.stage]}>
+                      {stageLabels[log.stage]}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(log.date).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setEditingEntry(log)}
+                    className="h-7 w-7 p-0"
+                  >
+                    <Edit className="w-3 h-3" />
+                  </Button>
                 </div>
                 <p className="text-sm text-foreground">{log.observations}</p>
                 {(log.height || log.ph || log.ec || log.temperature) && (
@@ -105,7 +126,8 @@ export const LogTimeline = ({ geneticId }: LogTimelineProps) => {
             </div>
           </Card>
         );
-      })}
-    </div>
+        })}
+      </div>
+    </>
   );
 };
