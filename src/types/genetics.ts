@@ -35,6 +35,7 @@ export interface LogEntry {
 }
 
 export interface CultivationSession {
+  id?: string;
   geneticId: string;
   startDate: string;
   endDate?: string;
