@@ -30,24 +30,49 @@ export const LogEntryForm = ({ geneticId, genetic }: LogEntryFormProps) => {
   const [startNotes, setStartNotes] = useState('');
   const [finalYield, setFinalYield] = useState('');
 
-  const handleAddEntry = () => {
+  const handleAddEntry = async () => {
     if (!observations.trim()) {
       toast.error('Las observaciones son requeridas');
       return;
     }
 
-    addLogEntry({
+    // Validate numeric inputs
+    const heightNum = height ? parseFloat(height) : undefined;
+    const phNum = ph ? parseFloat(ph) : undefined;
+    const ecNum = ec ? parseFloat(ec) : undefined;
+    const tempNum = temperature ? parseFloat(temperature) : undefined;
+
+    if (height && (isNaN(heightNum!) || heightNum! < 0 || heightNum! > 500)) {
+      toast.error('Altura inválida (0-500 cm)');
+      return;
+    }
+
+    if (ph && (isNaN(phNum!) || phNum! < 0 || phNum! > 14)) {
+      toast.error('pH inválido (0-14)');
+      return;
+    }
+
+    if (ec && (isNaN(ecNum!) || ecNum! < 0 || ecNum! > 10)) {
+      toast.error('EC inválida (0-10 mS/cm)');
+      return;
+    }
+
+    if (temperature && (isNaN(tempNum!) || tempNum! < -10 || tempNum! > 60)) {
+      toast.error('Temperatura inválida (-10 a 60°C)');
+      return;
+    }
+
+    await addLogEntry({
       geneticId,
       date: new Date().toISOString(),
       stage,
       observations,
-      height: height ? parseFloat(height) : undefined,
-      ph: ph ? parseFloat(ph) : undefined,
-      ec: ec ? parseFloat(ec) : undefined,
-      temperature: temperature ? parseFloat(temperature) : undefined,
+      height: heightNum,
+      ph: phNum,
+      ec: ecNum,
+      temperature: tempNum,
     });
 
-    toast.success('Entrada agregada exitosamente');
     setObservations('');
     setHeight('');
     setPh('');

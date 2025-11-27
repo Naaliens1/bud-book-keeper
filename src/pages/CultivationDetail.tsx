@@ -4,16 +4,27 @@ import { useGenetics } from '@/contexts/GeneticsContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Calendar, Clock, Leaf } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Leaf, Trash2 } from 'lucide-react';
 import { LogEntryForm } from '@/components/LogEntryForm';
 import { LogTimeline } from '@/components/LogTimeline';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export const CultivationDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { sessions, genetics, getLogsByGenetic } = useGenetics();
+  const { sessions, genetics, getLogsByGenetic, deleteCultivation } = useGenetics();
   const [session, setSession] = useState<any>(null);
   const [genetic, setGenetic] = useState<any>(null);
 
@@ -57,6 +68,11 @@ export const CultivationDetail = () => {
         (new Date().getTime() - new Date(session.startDate).getTime()) / (1000 * 60 * 60 * 24)
       );
 
+  const handleDeleteCultivation = async () => {
+    await deleteCultivation(session.id);
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="sticky top-0 z-10 bg-card border-b border-border shadow-sm">
@@ -70,6 +86,27 @@ export const CultivationDetail = () => {
             </h1>
             <p className="text-sm text-muted-foreground">{genetic.bank}</p>
           </div>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="icon">
+                <Trash2 className="w-5 h-5" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>¿Eliminar cultivo?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta acción no se puede deshacer. Se eliminará permanentemente este cultivo y todas sus entradas de bitácora.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteCultivation} className="bg-destructive hover:bg-destructive/90">
+                  Eliminar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 

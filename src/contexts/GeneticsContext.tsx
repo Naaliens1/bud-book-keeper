@@ -11,8 +11,11 @@ interface GeneticsContextType {
   sessions: CultivationSession[];
   loading: boolean;
   addLogEntry: (entry: Omit<LogEntry, 'id'>) => Promise<void>;
+  updateLogEntry: (id: string, entry: Partial<LogEntry>) => Promise<void>;
+  deleteLogEntry: (id: string) => Promise<void>;
   startCultivation: (geneticId: string, notes: string, cultivationName: string) => Promise<void>;
   endCultivation: (geneticId: string, finalYield: number) => Promise<void>;
+  deleteCultivation: (sessionId: string) => Promise<void>;
   getLogsByGenetic: (geneticId: string) => LogEntry[];
   getSessionByGenetic: (geneticId: string) => CultivationSession | undefined;
   refreshData: () => Promise<void>;
@@ -283,6 +286,126 @@ export const GeneticsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return sessions.find(session => session.geneticId === geneticId && !session.endDate);
   };
 
+  const updateLogEntry = async (id: string, entry: Partial<LogEntry>) => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Debes iniciar sesión",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('log_entries')
+        .update({
+          date: entry.date,
+          stage: entry.stage,
+          observations: entry.observations,
+          height: entry.height,
+          ph: entry.ph,
+          ec: entry.ec,
+          temperature: entry.temperature,
+        })
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Entrada actualizada",
+        description: "La entrada se actualizó correctamente",
+      });
+
+      await refreshData();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error al actualizar entrada",
+        description: error.message,
+      });
+    }
+  };
+
+  const deleteLogEntry = async (id: string) => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Debes iniciar sesión",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('log_entries')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Entrada eliminada",
+        description: "La entrada se eliminó correctamente",
+      });
+
+      await refreshData();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error al eliminar entrada",
+        description: error.message,
+      });
+    }
+  };
+
+  const deleteCultivation = async (sessionId: string) => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Debes iniciar sesión",
+      });
+      return;
+    }
+
+    try {
+      // First delete all log entries for this session
+      const { error: logsError } = await supabase
+        .from('log_entries')
+        .delete()
+        .eq('session_id', sessionId)
+        .eq('user_id', user.id);
+
+      if (logsError) throw logsError;
+
+      // Then delete the session
+      const { error: sessionError } = await supabase
+        .from('cultivation_sessions')
+        .delete()
+        .eq('id', sessionId)
+        .eq('user_id', user.id);
+
+      if (sessionError) throw sessionError;
+
+      toast({
+        title: "Cultivo eliminado",
+        description: "El cultivo y todas sus entradas se eliminaron correctamente",
+      });
+
+      await refreshData();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error al eliminar cultivo",
+        description: error.message,
+      });
+    }
+  };
+
   return (
     <GeneticsContext.Provider
       value={{
@@ -291,8 +414,11 @@ export const GeneticsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         sessions,
         loading,
         addLogEntry,
+        updateLogEntry,
+        deleteLogEntry,
         startCultivation,
         endCultivation,
+        deleteCultivation,
         getLogsByGenetic,
         getSessionByGenetic,
         refreshData,
