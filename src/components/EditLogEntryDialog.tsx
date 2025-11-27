@@ -149,6 +149,7 @@ export const EditLogEntryDialog = ({ entry, open, onOpenChange }: EditLogEntryDi
               onChange={(e) => setObservations(e.target.value)}
               placeholder="Describe lo que observas..."
               rows={4}
+              maxLength={2000}
             />
           </div>
 

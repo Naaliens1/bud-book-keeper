@@ -92,7 +92,14 @@ export const LogEntryForm = ({ geneticId, genetic }: LogEntryFormProps) => {
       toast.error('Ingresa el rendimiento final');
       return;
     }
-    endCultivation(geneticId, parseFloat(finalYield));
+    
+    const yieldNum = parseFloat(finalYield);
+    if (isNaN(yieldNum) || yieldNum < 0 || yieldNum > 10000) {
+      toast.error('Rendimiento inválido (0-10000 gramos)');
+      return;
+    }
+    
+    endCultivation(geneticId, yieldNum);
     toast.success('Cultivo finalizado exitosamente');
     setFinalYield('');
   };
@@ -172,6 +179,7 @@ export const LogEntryForm = ({ geneticId, genetic }: LogEntryFormProps) => {
               onChange={(e) => setObservations(e.target.value)}
               placeholder="Describe lo que observas..."
               className="bg-background border-border"
+              maxLength={2000}
             />
           </div>
 
